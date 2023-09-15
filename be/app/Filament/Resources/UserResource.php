@@ -6,10 +6,14 @@ use App\Filament\Resources\UserResource\Pages;
 use App\Filament\Resources\UserResource\RelationManagers;
 use App\Models\User;
 use Filament\Forms;
+use Filament\Forms\Components\Select;
+use Filament\Forms\Components\TextInput;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
+use Filament\Tables\Columns\TagsColumn;
 use Filament\Tables\Table;
+use Illuminate\Support\Facades\Hash;
 
 class UserResource extends Resource
 {
@@ -29,10 +33,31 @@ class UserResource extends Resource
                     ->email()
                     ->required()
                     ->maxLength(255),
-                Forms\Components\TextInput::make(__('password'))
+                TextInput::make('password')
+                    ->same('passwordConfirmation')
                     ->password()
-                    ->required()
-                    ->maxLength(255),
+                    ->maxLength(255)
+                    ->required(fn (
+                        $component,
+                        $get,
+                        $livewire,
+                        $model,
+                        $record,
+                        $set,
+                        $state
+                    ) => $record === null)
+                    ->dehydrateStateUsing(fn ($state) => ! empty($state) ? Hash::make($state) : '')
+                    ->label(strval('Password')),
+                TextInput::make('passwordConfirmation')
+                    ->password()
+                    ->dehydrated(false)
+                    ->maxLength(255)
+                    ->label(strval('Password Confirmation')),
+                Select::make('services')
+                    ->multiple()
+                    ->relationship('services', 'name')
+                    ->preload(true)
+                    ->label(strval(__('Servicios'))),
             ])->debounce(50);
     }
 
@@ -44,6 +69,8 @@ class UserResource extends Resource
                     ->searchable(),
                 Tables\Columns\TextColumn::make(__('email'))
                     ->searchable(),
+                Tables\Columns\TextColumn::make('services.name')
+                    ->label(strval('Servicios')),
                 Tables\Columns\TextColumn::make('created_at')
                     ->dateTime()
                     ->sortable()

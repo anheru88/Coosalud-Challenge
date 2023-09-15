@@ -75,22 +75,22 @@ class ServiceResource extends Resource
 
                 // @todo : Update the method to upload file and process in background.
 
-//                Action::make('updateServices')
-//                    ->label('Cargar Servicios')
-//                    ->form([
-//                        FileUpload::make('services_file')
-//                            ->preserveFilenames()
-//                            ->acceptedFileTypes(['application/vnd.ms-excel', 'application/csv', 'text/csv'])
-//                            ->required()
-//                    ])
-//                    ->action(function (array $data): void {
-//
-//                        Notification::make()
-//                            ->title('Guardado Exitosamente')
-//                            ->success()
-//                            ->body('Servicio Agregado!')
-//                            ->send();
-//                    }),
+                Action::make('updateServices')
+                    ->label('Cargar Servicios')
+                    ->form([
+                        FileUpload::make('services_file')
+                            ->preserveFilenames()
+                            ->acceptedFileTypes(['application/vnd.ms-excel', 'application/csv', 'text/csv'])
+                            ->required()
+                    ])
+                    ->action(function (array $data): void {
+
+                        Notification::make()
+                            ->title('Guardado Exitosamente')
+                            ->success()
+                            ->body('Servicio Agregado!')
+                            ->send();
+                    }),
             ]);
     }
 
